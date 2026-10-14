@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TTPT Bot — Automated Group Management & AI Assistant</title>
+  <style>
+    /* Reset & CSS Variables */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #0d1117;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* Layout Containers */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* Navigation */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .nav-inner {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #818cf8;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #8b949e;
+    }
+    .nav-links a:hover { color: #ffffff; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: #6366f1;
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+    }
+    .btn-primary:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #c9d1d9;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #8b949e;
+      margin-bottom: 28px;
+    }
+    .dot { width: 8px; height: 8px; background: #34d399; border-radius: 50%; }
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8 0%, #38bdf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      max-width: 640px;
+      margin: 0 auto 36px;
+      font-size: 1.1rem;
+      color: #8b949e;
+    }
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    /* Features Section */
+    .section { padding: 100px 0; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+    .section-title { text-align: center; margin-bottom: 60px; }
+    .section-title h2 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
+    .section-title p { color: #8b949e; font-size: 0.95rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    /* Glass Cards */
+    .card {
+      background: #161b22;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 32px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .icon-indigo { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+    .icon-cyan { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .icon-purple { background: rgba(192, 132, 252, 0.15); color: #c084fc; }
+    .icon-emerald { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+    .icon-amber { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+    .icon-rose { background: rgba(244, 63, 94, 0.15); color: #f43f5e; }
+
+    .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; color: #ffffff; }
+    .card p { font-size: 0.9rem; color: #8b949e; line-height: 1.6; }
+
+    /* Commands Table */
+    .table-container {
+      background: #161b22;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+    th {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 16px 24px;
+      font-weight: 700;
+      color: #8b949e;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    td {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #c9d1d9;
+    }
+    tr:last-child td { border-bottom: none; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, SF Pro Mono, Menlo, Consolas, monospace;
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.1);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 0;
+      background: #090d16;
+      margin-top: 60px;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-text { font-size: 0.85rem; color: #8b949e; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      .nav-links { display: none; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#" class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+          </div>
+          <span>TTPT <span style="color: #818cf8;">Reminder</span></span>
+        </a>
+        <nav class="nav-links">
+          <a href="#overview">Overview</a>
+          <a href="#features">Features</a>
+          <a href="#commands">Commands</a>
+          <a href="#creator">Creator</a>
+        </nav>
+        <a href="https://t.me/failedatkhant" target="_blank" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          Contact Creator
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">
+        <span class="dot"></span>
+        Created with precision by <strong style="color: #ffffff; margin-left: 4px;">khantdev</strong>
+      </div>
+      <h1>
+        Supercharge Your Study Groups With <br />
+        <span class="gradient-text">Automated Precision</span>
+      </h1>
+      <p>
+        Automated Process Management, Weekly Homework Tracking, AI Vocabulary Lookups, and Natural Audio Pronunciation — powered by Cloudflare Workers & KV Storage.
+      </p>
+      <div class="hero-buttons">
+        <a href="#features" class="btn btn-primary">
+          Explore Features
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </a>
+        <a href="mailto:retriling123@gmail.com" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          Email Support
+        </a>
+        <a href="https://ttpt-reminder.khantalk.workers.dev/web" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Web Dashboard
+        </a>
+        <a href="https://t.me/ttpt_reminderbot" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Bot
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Key Features</h2>
+        <p>Built specifically for study groups, classrooms, and project teams.</p>
+      </div>
+
+      <div class="grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-icon icon-indigo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>Multi-Process Scheduler</h3>
+          <p>Configure automated scheduled reminders for target exam dates or project deadlines with daily countdowns (<code>Left Time</code>).</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-icon icon-cyan">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+          </div>
+          <h3>Weekly Homework Sync</h3>
+          <p>Keep track of weekly subject assignments with automated resets every Monday at 00:00 (Asia/Yangon time).</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-icon icon-purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          </div>
+          <h3>Neumorphic Dashboard</h3>
+          <p>Manage all processes, dates, reminder times, and homework lists via an integrated web interface (<code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;"><a href="https://ttpt-reminder.khantalk.workers.dev/web" style="color: #818cf8;">/web</a></code>).</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-icon icon-amber">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </div>
+          <h3>AI Vocabulary Lookup</h3>
+          <p>Instant English word breakdowns (parts of speech, Myanmar translations, synonyms, and examples) powered by Coze AI.</p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+          <div class="card-icon icon-emerald">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </div>
+          <h3>TTS Pronunciation</h3>
+          <p>Listen to natural English audio pronunciation directly inside group chats using <code>/listen [word]</code>.</p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+          <div class="card-icon icon-rose">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3>Myanmar Timezone Native</h3>
+          <p>Synchronized precisely with Asia/Yangon (UTC+6:30) time standards for accurate schedule triggers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commands Section -->
+  <section id="commands" class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Bot Commands</h2>
+        <p>Interactive group commands ready out of the box.</p>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>/start</code></td>
+              <td>Welcome message and direct link to the Web Dashboard.</td>
+            </tr>
+            <tr>
+              <td><code>/menu</code></td>
+              <td>Displays all active processes, target date countdowns, and homework lists.</td>
+            </tr>
+            <tr>
+              <td><code>/web</code></td>
+              <td>Opens the Neumorphic Web Dashboard URL for managing group settings.</td>
+            </tr>
+            <tr>
+              <td><code>/listen &lt;word&gt;</code></td>
+              <td>Generates a voice message with the English pronunciation of the requested word.</td>
+            </tr>
+            <tr>
+              <td><code>/vocab &lt;word&gt;</code></td>
+              <td>Looks up deep linguistic breakdown and Myanmar translations for an English word.</td>
+            </tr>
+            <tr>
+              <td><code>@bot_username &lt;word&gt;</code></td>
+              <td>Mentioning the bot in a group chat triggers an automatic vocabulary lookup.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="creator">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <h3 style="font-size: 1.1rem; font-weight: 800; color: #ffffff;">Created by <span style="color: #818cf8;">khantdev</span></h3>
+          <p class="footer-text">Software Developer</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <a href="https://t.me/failedatkhant" target="_blank" class="btn btn-secondary" style="font-size: 0.8rem;">Telegram: @failedatkhant</a>
+          <a href="mailto:retriling123@gmail.com" class="btn btn-secondary" style="font-size: 0.8rem;">retriling123@gmail.com</a>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;" class="footer-text">
+        © 2026 TTPT Reminder Bot. Open Source under khantdev.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
