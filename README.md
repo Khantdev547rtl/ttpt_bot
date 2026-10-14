@@ -71,3 +71,8 @@ The built-in web dashboard provides a seamless UI for managing active processes 
 # Clone the repository
 git clone [https://github.com/your-username/ttpt-reminder-bot.git](https://github.com/your-username/ttpt-reminder-bot.git)
 cd ttpt-reminder-bot
+```
+
+#create by khantdev 
+- tg acc - @ failedatkhant
+- gmail - retriling123@gmail.com
