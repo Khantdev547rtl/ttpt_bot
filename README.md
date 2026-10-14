@@ -9,7 +9,7 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-[Web Dashboard Direct Link](#-web-dashboard) • [Key Features](#-key-features) • [Deployment Setup](#-deployment--environment-setup) • [Bot Commands](#-bot-commands)
+[🌐 Live Web Dashboard](https://ttpt-reminder.khantalk.workers.dev/web) • [📖 Official Website](https://khantdev547rtl.github.io/ttpt_bot/) • [✨ Key Features](#-key-features) • [🛠️ Commands](#%EF%B8%8F-bot-commands) • [🚀 Setup](#-deployment--environment-setup)
 
 </div>
 
@@ -19,7 +19,7 @@
 
 **TTPT Reminder Bot** is a high-performance, serverless Telegram bot built on top of **Cloudflare Workers** and **Cloudflare KV Storage**. Designed specifically for study groups, classrooms, and project teams, it automates daily scheduled process reminders, weekly homework tracking, AI-powered English vocabulary lookups, and text-to-speech pronunciation generation.
 
-It also features an embedded **Neumorphic Web Application** dashboard integrated with the Telegram Web App SDK for easy process management directly inside or outside Telegram.
+It features an embedded **Neumorphic Web Application** dashboard integrated with the Telegram Web App SDK for real-time process management directly inside or outside Telegram.
 
 ---
 
@@ -47,7 +47,10 @@ It also features an embedded **Neumorphic Web Application** dashboard integrated
 
 ---
 
-## 📱 Web Dashboard
+## 📱 Live Links & Web Dashboard
+
+- **🌐 Live Web Dashboard:** [ttpt-reminder.khantalk.workers.dev/web](https://ttpt-reminder.khantalk.workers.dev/web)
+- **📖 Product Showcase Website:** [khantdev547rtl.github.io/ttpt_bot](https://khantdev547rtl.github.io/ttpt_bot/)
 
 The built-in web dashboard provides a seamless UI for managing active processes in real time:
 
@@ -69,10 +72,14 @@ The built-in web dashboard provides a seamless UI for managing active processes 
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/ttpt-reminder-bot.git
-cd ttpt-reminder-bot
-```
 
-### create by khantdev 
-- tg acc - @ failedatkhant
-- gmail - retriling123@gmail.com
+git clone [https://github.com/khantdev547rtl/ttpt_bot.git]
+cd ttpt_bot
+
+wrangler secret put TELEGRAM_BOT_TOKEN
+wrangler secret put BOT_USERNAME
+wrangler secret put COZE_API_TOKEN   # Optional for AI features
+wrangler secret put COZE_BOT_ID      # Optional for AI features
+
+wrangler deploy
+```
