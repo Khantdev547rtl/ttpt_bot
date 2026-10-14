@@ -73,6 +73,6 @@ git clone [https://github.com/your-username/ttpt-reminder-bot.git](https://githu
 cd ttpt-reminder-bot
 ```
 
-#create by khantdev 
-- tg acc - @ failedatkhant
+### create by khantdev 
+- (style=for-the-badge&logo=telegram&logoColor=white)tg acc - @ failedatkhant
 - gmail - retriling123@gmail.com
