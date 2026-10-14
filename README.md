@@ -75,6 +75,12 @@ The built-in web dashboard provides a seamless UI for managing active processes 
 
 git clone [https://github.com/khantdev547rtl/ttpt_bot.git]
 cd ttpt_bot
+```
+
+### 2. secret .env 
+
+```bash
+# Put secret .env 
 
 wrangler secret put TELEGRAM_BOT_TOKEN
 wrangler secret put BOT_USERNAME
