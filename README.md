@@ -74,5 +74,5 @@ cd ttpt-reminder-bot
 ```
 
 ### create by khantdev 
-- (style=for-the-badge&logo=telegram&logoColor=white)tg acc - @ failedatkhant
+- tg acc - @ failedatkhant
 - gmail - retriling123@gmail.com
