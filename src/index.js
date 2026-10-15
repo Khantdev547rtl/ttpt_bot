@@ -2,23 +2,50 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // CORS Headers for Web Fetch API
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
     if (url.pathname === '/web' || url.pathname === '/web/') {
       const chatId = url.searchParams.get('chat_id') || '';
       return new Response(getWebHTML(chatId), {
-        headers: { 'Content-Type': 'text/html; charset=utf-8' }
+        headers: { 'Content-Type': 'text/html; charset=utf-8', ...corsHeaders }
+      });
+    }
+
+    // NEW: Web Sandbox AI Vocabulary API Endpoint
+    if (url.pathname === '/api/vocab') {
+      const word = url.searchParams.get('word');
+      if (!word) {
+        return new Response(JSON.stringify({ error: 'Missing word parameter' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      const vocabResult = await fetchVocabularyInfo(word, env);
+      return new Response(JSON.stringify({ result: vocabResult }), {
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 
     if (url.pathname === '/api/processes') {
       const chatId = url.searchParams.get('chat_id');
-      if (!chatId) return new Response(JSON.stringify({ error: 'Missing chat_id' }), { status: 400 });
+      if (!chatId) return new Response(JSON.stringify({ error: 'Missing chat_id' }), { status: 400, headers: corsHeaders });
       
       const listKey = `processes_${chatId}`;
 
       if (request.method === 'GET') {
         let processes = await env.BOT_KV.get(listKey, { type: 'json' }) || [];
         return new Response(JSON.stringify(processes), {
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       }
 
@@ -26,7 +53,7 @@ export default {
         const body = await request.json();
         await env.BOT_KV.put(listKey, JSON.stringify(body.processes || []));
         return new Response(JSON.stringify({ success: true }), {
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       }
     }
@@ -124,7 +151,7 @@ export default {
             return new Response('OK');
           }
 
-          // NEW FEATURE: Text-To-Speech Pronunciation Command (/listen [word])
+          // Text-To-Speech Pronunciation Command (/listen [word])
           if (rawText.startsWith('/listen')) {
             const textToSpeech = rawText.replace(/\/listen(@\w+)?/i, '').trim();
             if (!textToSpeech) {
@@ -138,7 +165,7 @@ export default {
             return new Response('OK');
           }
 
-          // 2. Vocabulary AI Mention Handler
+          // Vocabulary AI Mention Handler
           const botUsername = "@" + (env.BOT_USERNAME || "ttpt_reminderbot").toLowerCase();
           const lowerRawText = rawText.toLowerCase();
 
@@ -611,7 +638,4 @@ function getWebHTML(chatId) {
   </script>
 </body>
 </html>`;
-} 
-
-
-
+}
