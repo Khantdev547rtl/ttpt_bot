@@ -163,34 +163,16 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    // Robust timezone handling using Intl.DateTimeFormat for 'Asia/Yangon' (+6:30)
     const now = new Date();
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Asia/Yangon',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: false,
-      weekday: 'numeric'
-    });
-
-    const parts = formatter.formatToParts(now);
-    const timeParts = {};
-    for (const part of parts) {
-      if (part.type !== 'literal') {
-        timeParts[part.type] = parseInt(part.value, 10);
-      }
-    }
-
-    const currentHour = timeParts.hour === 24 ? 0 : timeParts.hour;
-    const currentMinute = timeParts.minute;
+    const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const myanmarTime = new Date(utcMs + (390 * 60000));
+    
+    const currentHour = myanmarTime.getHours();
+    const currentMinute = myanmarTime.getMinutes();
     const currentTotalMinutes = currentHour * 60 + currentMinute;
 
-    const today = new Date(timeParts.year, timeParts.month - 1, timeParts.day);
-    // getDay() returns 0 for Sunday, 1 for Monday, etc. Intl weekday: 1=Sun, 2=Mon... let's normalize or use standard Date for weekday
-    const currentDayOfWeek = new Date(timeParts.year, timeParts.month - 1, timeParts.day).getDay();
+    const today = new Date(myanmarTime.getFullYear(), myanmarTime.getMonth(), myanmarTime.getDate());
+    const currentDayOfWeek = myanmarTime.getDay();
 
     const list = await env.BOT_KV.list();
 
@@ -629,4 +611,7 @@ function getWebHTML(chatId) {
   </script>
 </body>
 </html>`;
-}
+} 
+
+
+
